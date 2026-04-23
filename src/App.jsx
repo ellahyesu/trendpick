@@ -414,6 +414,8 @@ function BarChart({ stocks, catId, accent }) {
 
 // ── MAIN ────────────────────────────────────────────────────────────────────
 
+// ── MAIN ────────────────────────────────────────────────────────────────────
+
 export default function TrendPick() {
   const [marketTab,      setMarketTab]      = useState("domestic");
   const [catId,          setCatId]          = useState("aiPick");
@@ -486,9 +488,7 @@ export default function TrendPick() {
       const text = data.content?.[0]?.text || "";
       const parsed = JSON.parse(text.replace(/```json|```/g,"").trim());
       setSignals(parsed);
-    } catch(e) {
-      setSignals({ error:true });
-    }
+    } catch(e) { setSignals({ error:true }); }
     setSignalLoading(false);
   };
 
@@ -504,108 +504,99 @@ export default function TrendPick() {
   const momColors = { "강함":"#10B981", "보통":"#64748B", "약함":"#EF4444" };
   const momBg     = { "강함":"#ECFDF5", "보통":"#F8FAFC",  "약함":"#FEF2F2" };
 
-  // ── 구독 플랜 데이터 ──
   const PLANS = [
-    { id:1, badge:"BASIC",       badgeColor:"#3B82F6", title:"광고제거 + AI 탑픽 TOP 3",                    price:"월 2,900원",  desc:"부담 없이 시작하는 입문 플랜",               items:["✅ 광고 완전 제거","✅ AI 탑픽 종목 TOP 3 매일 추천","❌ 보유종목 시그널 없음","❌ 주간 리포트 없음"],                                              bg:"#fff",                                      border:"#E2E8F0", btnBg:"#3B82F6",  btnLabel:"베이직 시작하기 →" },
-    { id:2, badge:"STANDARD ⭐", badgeColor:"#10B981", title:"탑픽 + 보유종목 3개 시그널",                  price:"월 9,900원",  desc:"투자 판단이 필요한 직장인에게 딱",           items:["✅ 광고 완전 제거","✅ AI 탑픽 종목 TOP 3 매일 추천","✅ 보유종목 3개 매수/보유/매도 시그널","❌ 주간 리포트 없음"],                              bg:"linear-gradient(135deg,#F0FDF4,#DCFCE7)", border:"#10B981", btnBg:"#10B981",  btnLabel:"스탠다드 시작하기 →", popular:true },
-    { id:3, badge:"PRO 🔥",      badgeColor:"#F59E0B", title:"탑픽 TOP 10 + 보유종목 10개 + 주간 리포트",  price:"월 29,900원", desc:"진지하게 투자하는 분들을 위한 풀패키지",     items:["✅ 광고 완전 제거","✅ AI 탑픽 종목 TOP 10 매일 추천","✅ 보유종목 10개 매수/보유/매도 시그널","✅ 매주 월요일 AI 주간 시황 리포트"],             bg:"linear-gradient(135deg,#FFFBEB,#FEF3C7)", border:"#F59E0B", btnBg:"#F59E0B",  btnLabel:"PRO 시작하기 →" },
+    { id:1, badge:"BASIC",       badgeColor:"#3B82F6", title:"광고제거 + AI 탑픽 TOP 3",                   price:"월 2,900원",  desc:"부담 없이 시작하는 입문 플랜",           items:["✅ 광고 완전 제거","✅ AI 탑픽 종목 TOP 3 매일 추천","❌ 보유종목 시그널 없음","❌ 주간 리포트 없음"],                                          bg:"#fff",                                      border:"#E2E8F0", btnBg:"#3B82F6", btnLabel:"베이직 시작하기 →" },
+    { id:2, badge:"STANDARD ⭐", badgeColor:"#10B981", title:"탑픽 + 보유종목 3개 시그널",                 price:"월 9,900원",  desc:"투자 판단이 필요한 직장인에게 딱",       items:["✅ 광고 완전 제거","✅ AI 탑픽 종목 TOP 3 매일 추천","✅ 보유종목 3개 매수/보유/매도 시그널","❌ 주간 리포트 없음"],                          bg:"linear-gradient(135deg,#F0FDF4,#DCFCE7)", border:"#10B981", btnBg:"#10B981", btnLabel:"스탠다드 시작하기 →", popular:true },
+    { id:3, badge:"PRO 🔥",      badgeColor:"#F59E0B", title:"탑픽 TOP 10 + 보유종목 10개 + 주간 리포트", price:"월 29,900원", desc:"진지하게 투자하는 분들을 위한 풀패키지", items:["✅ 광고 완전 제거","✅ AI 탑픽 종목 TOP 10 매일 추천","✅ 보유종목 10개 매수/보유/매도 시그널","✅ 매주 월요일 AI 주간 시황 리포트"],         bg:"linear-gradient(135deg,#FFFBEB,#FEF3C7)", border:"#F59E0B", btnBg:"#F59E0B", btnLabel:"PRO 시작하기 →" },
   ];
 
-  // ── 공통 UI 조각 ──
   const PlanCards = () => (
       <>
-        {PLANS.map(plan => (
-            <div key={plan.id} style={{ background:plan.bg, border:`2px solid ${plan.border}`, borderRadius:16, padding:"16px 16px 14px", marginBottom:12, position:"relative" }}>
-              {plan.popular && <div style={{ position:"absolute", top:-10, left:"50%", transform:"translateX(-50%)", background:"#10B981", color:"#fff", fontSize:10, fontWeight:800, padding:"3px 14px", borderRadius:99, whiteSpace:"nowrap" }}>가장 인기 있는 플랜</div>}
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
-                <div>
-                  <span style={{ fontSize:10, fontWeight:800, color:plan.badgeColor, background:"#F8FAFC", padding:"2px 8px", borderRadius:99 }}>{plan.badge}</span>
-                  <div style={{ fontSize:14, fontWeight:800, color:"#0F172A", marginTop:6 }}>{plan.title}</div>
+        <div className="plan-grid">
+          {PLANS.map(plan => (
+              <div key={plan.id} style={{ background:plan.bg, border:`2px solid ${plan.border}`, borderRadius:16, padding:"16px 16px 14px", position:"relative" }}>
+                {plan.popular && <div style={{ position:"absolute", top:-10, left:"50%", transform:"translateX(-50%)", background:"#10B981", color:"#fff", fontSize:10, fontWeight:800, padding:"3px 14px", borderRadius:99, whiteSpace:"nowrap" }}>가장 인기 있는 플랜</div>}
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
+                  <div>
+                    <span style={{ fontSize:10, fontWeight:800, color:plan.badgeColor, background:"#F8FAFC", padding:"2px 8px", borderRadius:99 }}>{plan.badge}</span>
+                    <div style={{ fontSize:14, fontWeight:800, color:"#0F172A", marginTop:6 }}>{plan.title}</div>
+                  </div>
+                  <div style={{ fontSize:16, fontWeight:900, color:"#0F172A", flexShrink:0, marginLeft:8 }}>{plan.price}</div>
                 </div>
-                <div style={{ fontSize:16, fontWeight:900, color:"#0F172A", flexShrink:0, marginLeft:8 }}>{plan.price}</div>
+                <div style={{ fontSize:11, color:"#64748B", marginBottom:10 }}>{plan.desc}</div>
+                {plan.items.map(item => <div key={item} style={{ fontSize:12, color:"#475569", marginBottom:5, fontWeight:500 }}>{item}</div>)}
+                <button onClick={() => setShowModal(plan.id)} style={{ width:"100%", marginTop:12, padding:"11px 0", background:plan.btnBg, color:"#fff", border:"none", borderRadius:10, fontSize:13, fontWeight:800, cursor:"pointer" }}>{plan.btnLabel}</button>
               </div>
-              <div style={{ fontSize:11, color:"#64748B", marginBottom:10 }}>{plan.desc}</div>
-              {plan.items.map(item => <div key={item} style={{ fontSize:12, color:"#475569", marginBottom:5, fontWeight:500 }}>{item}</div>)}
-              <button onClick={() => setShowModal(plan.id)} style={{ width:"100%", marginTop:12, padding:"11px 0", background:plan.btnBg, color:"#fff", border:"none", borderRadius:10, fontSize:13, fontWeight:800, cursor:"pointer" }}>{plan.btnLabel}</button>
-            </div>
-        ))}
-        <div style={{ textAlign:"center", fontSize:11, color:"#94A3B8", marginTop:4 }}>7일 무료 체험 · 언제든지 해지 가능</div>
+          ))}
+        </div>
+        <div style={{ textAlign:"center", fontSize:11, color:"#94A3B8", marginTop:12 }}>7일 무료 체험 · 언제든지 해지 가능</div>
       </>
   );
 
-  // ── 보유종목 화면 ──
-  const PortfolioScreen = () => (
-      <div style={{ minHeight:"100vh", background:"#F8FAFC", paddingBottom:80 }}>
-        <div style={{ background:"#fff", borderBottom:"1px solid #F1F5F9", padding:"20px 16px 16px", position:"sticky", top:0, zIndex:50 }}>
-          <div style={{ fontSize:20, fontWeight:900, color:"#0F172A", marginBottom:2 }}>📊 보유종목 시그널</div>
-          <div style={{ fontSize:12, color:"#94A3B8" }}>종목명 또는 티커 입력 후 분석</div>
-        </div>
-        <div style={{ padding:"16px" }}>
-          {!isSubscribed ? (
-              /* 비구독자 잠금 */
-              <div style={{ background:"#fff", borderRadius:16, padding:24, textAlign:"center", border:"2px dashed #E2E8F0", marginBottom:16 }}>
-                <div style={{ fontSize:36, marginBottom:12 }}>🔒</div>
-                <div style={{ fontSize:16, fontWeight:800, color:"#0F172A", marginBottom:8 }}>구독자 전용 기능</div>
-                <div style={{ fontSize:13, color:"#64748B", lineHeight:1.7, marginBottom:20 }}>스탠다드 이상 구독 시<br/>보유종목 모멘텀 시그널을 확인할 수 있어요</div>
-                <button onClick={() => setShowModal(2)} style={{ background:"linear-gradient(90deg,#10B981,#059669)", color:"#fff", border:"none", borderRadius:12, padding:"12px 28px", fontSize:14, fontWeight:800, cursor:"pointer" }}>스탠다드 구독하기 →</button>
+  const renderStockList = () => (
+      <div style={{ background:"#fff", borderRadius:"16px 16px 0 0", paddingBottom:80 }}>
+        <div className="stock-grid">
+          {stocks.map((stock,i) => (
+              <div key={`${marketTab}-${catId}-${stock.rank}-${i}`} className="stock-item" style={{ animationDelay:`${i*35}ms` }}>
+                <StockCard stock={stock} catId={catId} maxVal={maxVal} onClick={setSelectedStock}
+                           selected={selectedStock?.code===stock.code && selectedStock?.rank===stock.rank} accent={accent} />
               </div>
-          ) : (
-              <>
-                {/* 플랜 안내 배너 */}
-                <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", borderRadius:12, padding:"10px 14px", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
-                  <span style={{ fontSize:13 }}>{subscribedPlan === 3 ? "🔥" : "⭐"}</span>
-                  <span style={{ fontSize:12, fontWeight:700, color:"#4338CA" }}>
-                {subscribedPlan === 3 ? "PRO — 최대 10종목 분석 가능" : "STANDARD — 최대 3종목 분석 가능"}
-              </span>
-                  {subscribedPlan !== 3 && (
-                      <button onClick={() => setShowModal(3)} style={{ marginLeft:"auto", fontSize:10, fontWeight:700, color:"#6366F1", background:"#fff", border:"1px solid #C7D2FE", borderRadius:99, padding:"3px 10px", cursor:"pointer", flexShrink:0 }}>PRO 업그레이드</button>
-                  )}
+          ))}
+        </div>
+      </div>
+  );
+
+  // ── 보유종목 화면 ──
+  const PortfolioContent = () => (
+      <div style={{ padding:"16px" }}>
+        {!isSubscribed ? (
+            <div style={{ background:"#fff", borderRadius:16, padding:24, textAlign:"center", border:"2px dashed #E2E8F0", marginBottom:16 }}>
+              <div style={{ fontSize:36, marginBottom:12 }}>🔒</div>
+              <div style={{ fontSize:16, fontWeight:800, color:"#0F172A", marginBottom:8 }}>구독자 전용 기능</div>
+              <div style={{ fontSize:13, color:"#64748B", lineHeight:1.7, marginBottom:20 }}>스탠다드 이상 구독 시<br/>보유종목 모멘텀 시그널을 확인할 수 있어요</div>
+              <button onClick={() => setShowModal(2)} style={{ background:"linear-gradient(90deg,#10B981,#059669)", color:"#fff", border:"none", borderRadius:12, padding:"12px 28px", fontSize:14, fontWeight:800, cursor:"pointer" }}>스탠다드 구독하기 →</button>
+            </div>
+        ) : (
+            <>
+              <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", borderRadius:12, padding:"10px 14px", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
+                <span style={{ fontSize:13 }}>{subscribedPlan === 3 ? "🔥" : "⭐"}</span>
+                <span style={{ fontSize:12, fontWeight:700, color:"#4338CA" }}>{subscribedPlan === 3 ? "PRO — 최대 10종목 분석 가능" : "STANDARD — 최대 3종목 분석 가능"}</span>
+                {subscribedPlan !== 3 && <button onClick={() => setShowModal(3)} style={{ marginLeft:"auto", fontSize:10, fontWeight:700, color:"#6366F1", background:"#fff", border:"1px solid #C7D2FE", borderRadius:99, padding:"3px 10px", cursor:"pointer", flexShrink:0 }}>PRO 업그레이드</button>}
+              </div>
+              <div style={{ background:"#fff", borderRadius:16, padding:16, marginBottom:16 }}>
+                <div style={{ fontSize:13, fontWeight:700, color:"#0F172A", marginBottom:12 }}>종목 입력 ({portfolioInputs.filter(t=>t.trim()).length}/{maxSlots})</div>
+                <div className="portfolio-grid">
+                  {Array.from({length:maxSlots}).map((_,i) => (
+                      <input key={i} value={portfolioInputs[i]||""} onChange={e=>{const a=[...portfolioInputs];a[i]=e.target.value;setPortfolioInputs(a);}} placeholder={`종목 ${i+1}`}
+                             style={{ border:"1.5px solid #E2E8F0", borderRadius:8, padding:"9px 12px", fontSize:13, fontWeight:600, color:"#0F172A", outline:"none", background:"#F8FAFC", fontFamily:"monospace", width:"100%" }} />
+                  ))}
                 </div>
-
-                {/* 종목 입력 그리드 */}
-                <div style={{ background:"#fff", borderRadius:16, padding:16, marginBottom:16 }}>
-                  <div style={{ fontSize:13, fontWeight:700, color:"#0F172A", marginBottom:12 }}>
-                    종목 입력 ({portfolioInputs.filter(t=>t.trim()).length}/{maxSlots})
+                <button onClick={fetchSignals} disabled={signalLoading||portfolioInputs.filter(t=>t.trim()).length===0}
+                        style={{ width:"100%", marginTop:14, padding:"13px 0", background:signalLoading?"#94A3B8":"linear-gradient(90deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", borderRadius:12, fontSize:14, fontWeight:800, cursor:signalLoading?"not-allowed":"pointer" }}>
+                  {signalLoading ? "⏳ AI 분석 중..." : "✨ 모멘텀 분석하기"}
+                </button>
+              </div>
+              {signalLoading && (
+                  <div style={{ background:"#fff", borderRadius:16, padding:24, textAlign:"center" }}>
+                    <div style={{ width:36, height:36, borderRadius:"50%", border:"4px solid #C7D2FE", borderTopColor:"#6366F1", animation:"spin 0.8s linear infinite", margin:"0 auto 14px" }} />
+                    <div style={{ fontSize:14, fontWeight:700, color:"#4338CA" }}>AI가 종목을 분석하고 있어요</div>
+                    <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}>잠시만 기다려주세요</div>
                   </div>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
-                    {Array.from({length:maxSlots}).map((_,i) => (
-                        <input key={i}
-                               value={portfolioInputs[i] || ""}
-                               onChange={e => { const a=[...portfolioInputs]; a[i]=e.target.value; setPortfolioInputs(a); }}
-                               placeholder={`종목 ${i+1}`}
-                               style={{ border:"1.5px solid #E2E8F0", borderRadius:8, padding:"9px 12px", fontSize:13, fontWeight:600, color:"#0F172A", outline:"none", background:"#F8FAFC", fontFamily:"monospace" }}
-                        />
-                    ))}
-                  </div>
-                  <button onClick={fetchSignals} disabled={signalLoading || portfolioInputs.filter(t=>t.trim()).length===0}
-                          style={{ width:"100%", marginTop:14, padding:"13px 0", background:signalLoading?"#94A3B8":"linear-gradient(90deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", borderRadius:12, fontSize:14, fontWeight:800, cursor:signalLoading?"not-allowed":"pointer" }}>
-                    {signalLoading ? "⏳ AI 분석 중..." : "✨ 모멘텀 분석하기"}
-                  </button>
-                </div>
-
-                {/* 로딩 */}
-                {signalLoading && (
-                    <div style={{ background:"#fff", borderRadius:16, padding:24, textAlign:"center" }}>
-                      <div style={{ width:36, height:36, borderRadius:"50%", border:"4px solid #C7D2FE", borderTopColor:"#6366F1", animation:"spin 0.8s linear infinite", margin:"0 auto 14px" }} />
-                      <div style={{ fontSize:14, fontWeight:700, color:"#4338CA" }}>AI가 종목을 분석하고 있어요</div>
-                      <div style={{ fontSize:11, color:"#94A3B8", marginTop:4 }}>잠시만 기다려주세요</div>
-                    </div>
-                )}
-
-                {/* 시그널 결과 */}
-                {signals && !signals.error && (
-                    <>
-                      {signals.market_comment && (
-                          <div style={{ background:"linear-gradient(135deg,#0F172A,#1E1B4B)", borderRadius:12, padding:"12px 16px", marginBottom:12, display:"flex", gap:10, alignItems:"flex-start" }}>
-                            <span style={{ fontSize:16, flexShrink:0 }}>🤖</span>
-                            <div>
-                              <div style={{ fontSize:10, fontWeight:700, color:"#60A5FA", marginBottom:4 }}>오늘의 시장 코멘트</div>
-                              <div style={{ fontSize:12, color:"#CBD5E1", lineHeight:1.6 }}>{signals.market_comment}</div>
-                            </div>
+              )}
+              {signals && !signals.error && (
+                  <>
+                    {signals.market_comment && (
+                        <div style={{ background:"linear-gradient(135deg,#0F172A,#1E1B4B)", borderRadius:12, padding:"12px 16px", marginBottom:12, display:"flex", gap:10, alignItems:"flex-start" }}>
+                          <span style={{ fontSize:16, flexShrink:0 }}>🤖</span>
+                          <div>
+                            <div style={{ fontSize:10, fontWeight:700, color:"#60A5FA", marginBottom:4 }}>오늘의 시장 코멘트</div>
+                            <div style={{ fontSize:12, color:"#CBD5E1", lineHeight:1.6 }}>{signals.market_comment}</div>
                           </div>
-                      )}
+                        </div>
+                    )}
+                    <div className="signal-grid">
                       {signals.signals?.map((s,i) => (
-                          <div key={i} className="stock-item" style={{ background:"#fff", borderRadius:14, padding:"14px 16px", marginBottom:10, borderLeft:`4px solid ${sigColors[s.signal]||"#94A3B8"}`, animationDelay:`${i*60}ms` }}>
+                          <div key={i} className="stock-item" style={{ background:"#fff", borderRadius:14, padding:"14px 16px", borderLeft:`4px solid ${sigColors[s.signal]||"#94A3B8"}`, animationDelay:`${i*60}ms` }}>
                             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
                               <span style={{ fontSize:16, fontWeight:900, color:"#0F172A" }}>{s.ticker}</span>
                               <div style={{ display:"flex", gap:6, alignItems:"center" }}>
@@ -622,276 +613,530 @@ export default function TrendPick() {
                             )}
                           </div>
                       ))}
-                      <button onClick={fetchSignals} style={{ width:"100%", marginTop:4, padding:"12px 0", background:"#F1F5F9", color:"#64748B", border:"none", borderRadius:12, fontSize:13, fontWeight:700, cursor:"pointer" }}>🔄 다시 분석하기</button>
-                    </>
-                )}
-                {signals?.error && (
-                    <div style={{ background:"#FEF2F2", borderRadius:12, padding:16, textAlign:"center", color:"#EF4444", fontSize:13, fontWeight:600 }}>분석 중 오류가 발생했어요. 다시 시도해주세요.</div>
-                )}
-                <div style={{ background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:12, padding:"12px 14px", marginTop:16, fontSize:11, color:"#92400E", lineHeight:1.6 }}>
-                  ⚠️ AI 분석 결과는 투자 참고용입니다. 실제 투자 결정은 본인 판단 하에 신중히 하세요.
-                </div>
-              </>
-          )}
-          {/* 비구독자에게도 플랜 안내 */}
-          {!isSubscribed && (
-              <div style={{ marginTop:8 }}>
-                <div style={{ background:"linear-gradient(135deg,#0F172A,#1E1B4B)", borderRadius:16, padding:"18px 16px", marginBottom:16 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-                    <span style={{ fontSize:18 }}>✨</span>
-                    <span style={{ fontSize:15, fontWeight:900, color:"#fff" }}>구독하면 이런 게 달라져요</span>
-                  </div>
-                  {[{ icon:"🚫", text:"광고 없이 쾌적하게 — 모든 플랜 공통" },{ icon:"🤖", text:"AI가 매일 엄선한 탑픽 종목 추천" },{ icon:"📊", text:"내 보유종목 매수/보유/매도 시그널" },{ icon:"📋", text:"매주 월요일 AI 주간 시황 리포트" }].map(item => (
-                      <div key={item.text} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
-                        <span style={{ fontSize:15 }}>{item.icon}</span>
-                        <span style={{ fontSize:13, color:"#CBD5E1", fontWeight:500 }}>{item.text}</span>
-                      </div>
-                  ))}
-                </div>
-                <PlanCards />
+                    </div>
+                    <button onClick={fetchSignals} style={{ width:"100%", marginTop:8, padding:"12px 0", background:"#F1F5F9", color:"#64748B", border:"none", borderRadius:12, fontSize:13, fontWeight:700, cursor:"pointer" }}>🔄 다시 분석하기</button>
+                  </>
+              )}
+              {signals?.error && <div style={{ background:"#FEF2F2", borderRadius:12, padding:16, textAlign:"center", color:"#EF4444", fontSize:13, fontWeight:600 }}>분석 중 오류가 발생했어요. 다시 시도해주세요.</div>}
+              <div style={{ background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:12, padding:"12px 14px", marginTop:16, fontSize:11, color:"#92400E", lineHeight:1.6 }}>
+                ⚠️ AI 분석 결과는 투자 참고용입니다. 실제 투자 결정은 본인 판단 하에 신중히 하세요.
               </div>
-          )}
-        </div>
-      </div>
-  );
-
-  // ── 홈 화면 렌더링 헬퍼 ──
-  const renderStockList = () => (
-      <div style={{ background:"#fff", borderRadius:"16px 16px 0 0", paddingBottom:80 }}>
-        {stocks.map((stock,i) => (
-            <div key={`${marketTab}-${catId}-${stock.rank}-${i}`} className="stock-item" style={{ animationDelay:`${i*35}ms` }}>
-              <StockCard stock={stock} catId={catId} maxVal={maxVal} onClick={setSelectedStock}
-                         selected={selectedStock?.code===stock.code && selectedStock?.rank===stock.rank} accent={accent} />
+            </>
+        )}
+        {!isSubscribed && (
+            <div style={{ marginTop:8 }}>
+              <div style={{ background:"linear-gradient(135deg,#0F172A,#1E1B4B)", borderRadius:16, padding:"18px 16px", marginBottom:16 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
+                  <span style={{ fontSize:18 }}>✨</span>
+                  <span style={{ fontSize:15, fontWeight:900, color:"#fff" }}>구독하면 이런 게 달라져요</span>
+                </div>
+                {[{icon:"🚫",text:"광고 없이 쾌적하게 — 모든 플랜 공통"},{icon:"🤖",text:"AI가 매일 엄선한 탑픽 종목 추천"},{icon:"📊",text:"내 보유종목 매수/보유/매도 시그널"},{icon:"📋",text:"매주 월요일 AI 주간 시황 리포트"}].map(item => (
+                    <div key={item.text} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+                      <span style={{ fontSize:15 }}>{item.icon}</span>
+                      <span style={{ fontSize:13, color:"#CBD5E1", fontWeight:500 }}>{item.text}</span>
+                    </div>
+                ))}
+              </div>
+              <PlanCards />
             </div>
-        ))}
+        )}
       </div>
   );
 
   return (
-      <div style={{ maxWidth:430, margin:"0 auto", minHeight:"100vh", background:"#F8FAFC", position:"relative" }}>
+      <div className="app-root">
         <style>{`
         * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { margin:0; background:#F8FAFC; }
-        ::-webkit-scrollbar { display:none; }
+        html, body { margin:0; background:#F8FAFC; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:#F1F5F9; }
+        ::-webkit-scrollbar-thumb { background:#CBD5E1; border-radius:99px; }
+
         @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
         @keyframes fadeIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         @keyframes ticker  { 0%,100%{opacity:0;transform:translateY(8px)} 10%,85%{opacity:1;transform:translateY(0)} }
         @keyframes spin    { to{transform:rotate(360deg)} }
         .stock-item { animation:fadeIn 0.28s ease both; }
         input:focus { border-color:#6366F1 !important; background:#fff !important; box-shadow:0 0 0 3px #EEF2FF; }
+
+        /* ── 앱 루트 ── */
+        .app-root {
+          min-height: 100vh;
+          background: #F8FAFC;
+        }
+
+        /* ── 데스크탑 레이아웃 ── */
+        .desktop-layout {
+          display: flex;
+          min-height: 100vh;
+        }
+
+        /* 사이드바 (데스크탑만) */
+        .sidebar {
+          width: 260px;
+          flex-shrink: 0;
+          background: #fff;
+          border-right: 1px solid #F1F5F9;
+          display: flex;
+          flex-direction: column;
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          overflow-y: auto;
+        }
+
+        /* 메인 콘텐츠 영역 */
+        .main-area {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* 콘텐츠 그리드 (데스크탑: 종목리스트 + 우측 패널) */
+        .content-grid {
+          display: flex;
+          flex: 1;
+          gap: 0;
+        }
+
+        .stock-panel {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .right-panel {
+          width: 340px;
+          flex-shrink: 0;
+          background: #fff;
+          border-left: 1px solid #F1F5F9;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        /* 종목 리스트 그리드 (데스크탑: 2컬럼) */
+        .stock-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        /* 플랜 카드 그리드 */
+        .plan-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 12px;
+          margin-bottom: 0;
+        }
+
+        /* 포트폴리오 입력 그리드 */
+        .portfolio-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        /* 시그널 결과 그리드 */
+        .signal-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 10px;
+          margin-bottom: 8px;
+        }
+
+        /* 모바일: 하단 탭바 표시 */
+        .bottom-tabbar {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100%;
+          max-width: 100%;
+          z-index: 80;
+          background: #fff;
+          border-top: 1px solid #F1F5F9;
+        }
+
+        /* 데스크탑 사이드 네비 */
+        .side-nav {
+          display: none;
+        }
+
+        /* ── 반응형 분기점 ── */
+
+        /* 태블릿 (768px~) */
+        @media (min-width: 768px) {
+          .stock-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+          .signal-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+          .plan-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+          }
+          .portfolio-grid {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+          }
+        }
+
+        /* 데스크탑 (1024px~) */
+        @media (min-width: 1024px) {
+          .bottom-tabbar { display: none; }
+          .side-nav { display: flex; flex-direction: column; }
+
+          .stock-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+          .plan-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+          }
+          .right-panel {
+            display: flex;
+          }
+        }
+
+        /* 넓은 데스크탑 (1280px~) */
+        @media (min-width: 1280px) {
+          .sidebar { width: 280px; }
+          .right-panel { width: 380px; }
+          .stock-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+
+        /* 모바일에서 right-panel 숨김 */
+        @media (max-width: 1023px) {
+          .right-panel { display: none; }
+          .desktop-layout { display: block; }
+          .sidebar { display: none; }
+        }
       `}</style>
 
-        {/* ── 탭 콘텐츠 ── */}
-        {activeTab === "portfolio" ? <PortfolioScreen /> : (
+        {/* ── 모바일 레이아웃 (< 1024px) ── */}
+        <div className="mobile-only" style={{ display:"block" }}>
+          <style>{`
+          @media (min-width: 1024px) { .mobile-only { display: none !important; } }
+        `}</style>
 
-            // ── 홈 탭 ──
-            <div style={{ paddingBottom:70 }}>
-
-              {/* Sticky Header */}
-              <div style={{ background:"#fff", borderBottom:"1px solid #F1F5F9", padding:"16px 16px 0", position:"sticky", top:0, zIndex:50 }}>
-                {/* Logo row */}
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
-                  <div>
-                    <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                      <span style={{ fontSize:22, fontWeight:900, color:"#0F172A", letterSpacing:"-0.5px" }}>TrendPick</span>
-                      <span style={{ fontSize:10, fontWeight:700, background:"#EFF6FF", color:"#3B82F6", padding:"2px 7px", borderRadius:99 }}>BETA</span>
-                    </div>
-                    <div style={{ fontSize:11, color:"#94A3B8", marginTop:1 }}>지금 가장 핫한 순위 한눈에</div>
-                  </div>
-                  <div style={{ background:"#FEF2F2", borderRadius:10, padding:"6px 10px", fontSize:11, color:"#EF4444", fontWeight:700 }}>🔴 LIVE</div>
+          {activeTab === "portfolio" ? (
+              <div style={{ minHeight:"100vh", background:"#F8FAFC", paddingBottom:80 }}>
+                <div style={{ background:"#fff", borderBottom:"1px solid #F1F5F9", padding:"20px 16px 16px", position:"sticky", top:0, zIndex:50 }}>
+                  <div style={{ fontSize:20, fontWeight:900, color:"#0F172A", marginBottom:2 }}>📊 보유종목 시그널</div>
+                  <div style={{ fontSize:12, color:"#94A3B8" }}>종목명 또는 티커 입력 후 분석</div>
                 </div>
-                {/* HOT ticker */}
-                <div style={{ background:"#0F172A", borderRadius:10, padding:"8px 14px", display:"flex", alignItems:"center", gap:8, marginBottom:12, overflow:"hidden" }}>
-                  <span style={{ fontSize:10, fontWeight:800, color:"#F59E0B", flexShrink:0 }}>🔥 HOT</span>
-                  <div style={{ flex:1, overflow:"hidden", height:18 }}>
-                    <span key={tickerIdx} style={{ display:"block", fontSize:12, fontWeight:700, color:"#fff", animation:"ticker 2.5s ease" }}>#{HOT_KEYWORDS[tickerIdx]}</span>
-                  </div>
-                  <span style={{ fontSize:10, color:"#475569", flexShrink:0 }}>{lastUpdated}</span>
-                </div>
-                {/* Market tab */}
-                <div style={{ display:"flex", background:"#F1F5F9", borderRadius:12, padding:4, marginBottom:12, gap:4 }}>
-                  {[{id:"domestic",label:"🇰🇷 국내주식",color:"#3B82F6"},{id:"overseas",label:"🌐 해외주식",color:"#8B5CF6"}].map(tab => (
-                      <button key={tab.id} onClick={() => handleMarketTab(tab.id)} style={{ flex:1, padding:"9px 0", border:"none", cursor:"pointer", borderRadius:9, fontSize:13, fontWeight:700, transition:"all 0.2s", background:marketTab===tab.id?"#fff":"transparent", color:marketTab===tab.id?tab.color:"#94A3B8", boxShadow:marketTab===tab.id?"0 1px 6px rgba(0,0,0,0.08)":"none" }}>{tab.label}</button>
-                  ))}
-                </div>
-                {/* Sliding accent bar */}
-                <div style={{ height:3, background:"#F1F5F9", borderRadius:99, overflow:"hidden", marginBottom:12 }}>
-                  <div style={{ height:"100%", width:"50%", background:accent, borderRadius:99, transform:isDomestic?"translateX(0)":"translateX(100%)", transition:"transform 0.3s ease, background 0.3s ease" }} />
-                </div>
-                {/* Category tabs */}
-                <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:12 }}>
-                  {CATEGORIES.map(c => (
-                      <button key={c.id} onClick={() => handleCat(c.id)} style={{ flexShrink:0, padding:"7px 13px", borderRadius:99, border:"none", cursor:"pointer", fontSize:12, fontWeight:700, transition:"all 0.15s", background:catId===c.id?accent:"#F1F5F9", color:catId===c.id?"#fff":"#64748B", boxShadow:catId===c.id?`0 2px 8px ${accent}44`:"none" }}>{c.label}</button>
-                  ))}
-                </div>
+                <PortfolioContent />
               </div>
-
-              {/* Section header */}
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"16px 16px 8px" }}>
-                <div>
-                  <div style={{ fontSize:16, fontWeight:800, color:"#0F172A" }}>{isDomestic?"🇰🇷":"🌐"} {cat.short} TOP 10</div>
-                  <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>{cat.desc}</div>
+          ) : (
+              <div style={{ paddingBottom:70 }}>
+                {/* 모바일 헤더 */}
+                <div style={{ background:"#fff", borderBottom:"1px solid #F1F5F9", padding:"16px 16px 0", position:"sticky", top:0, zIndex:50 }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+                    <div>
+                      <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                        <span style={{ fontSize:22, fontWeight:900, color:"#0F172A", letterSpacing:"-0.5px" }}>TrendPick</span>
+                        <span style={{ fontSize:10, fontWeight:700, background:"#EFF6FF", color:"#3B82F6", padding:"2px 7px", borderRadius:99 }}>BETA</span>
+                      </div>
+                      <div style={{ fontSize:11, color:"#94A3B8", marginTop:1 }}>지금 가장 핫한 순위 한눈에</div>
+                    </div>
+                    <div style={{ background:"#FEF2F2", borderRadius:10, padding:"6px 10px", fontSize:11, color:"#EF4444", fontWeight:700 }}>🔴 LIVE</div>
+                  </div>
+                  <div style={{ background:"#0F172A", borderRadius:10, padding:"8px 14px", display:"flex", alignItems:"center", gap:8, marginBottom:12, overflow:"hidden" }}>
+                    <span style={{ fontSize:10, fontWeight:800, color:"#F59E0B", flexShrink:0 }}>🔥 HOT</span>
+                    <div style={{ flex:1, overflow:"hidden", height:18 }}>
+                      <span key={tickerIdx} style={{ display:"block", fontSize:12, fontWeight:700, color:"#fff", animation:"ticker 2.5s ease" }}>#{HOT_KEYWORDS[tickerIdx]}</span>
+                    </div>
+                    <span style={{ fontSize:10, color:"#475569", flexShrink:0 }}>{lastUpdated}</span>
+                  </div>
+                  <div style={{ display:"flex", background:"#F1F5F9", borderRadius:12, padding:4, marginBottom:12, gap:4 }}>
+                    {[{id:"domestic",label:"🇰🇷 국내주식",color:"#3B82F6"},{id:"overseas",label:"🌐 해외주식",color:"#8B5CF6"}].map(tab => (
+                        <button key={tab.id} onClick={() => handleMarketTab(tab.id)} style={{ flex:1, padding:"9px 0", border:"none", cursor:"pointer", borderRadius:9, fontSize:13, fontWeight:700, transition:"all 0.2s", background:marketTab===tab.id?"#fff":"transparent", color:marketTab===tab.id?tab.color:"#94A3B8", boxShadow:marketTab===tab.id?"0 1px 6px rgba(0,0,0,0.08)":"none" }}>{tab.label}</button>
+                    ))}
+                  </div>
+                  <div style={{ height:3, background:"#F1F5F9", borderRadius:99, overflow:"hidden", marginBottom:12 }}>
+                    <div style={{ height:"100%", width:"50%", background:accent, borderRadius:99, transform:isDomestic?"translateX(0)":"translateX(100%)", transition:"transform 0.3s ease, background 0.3s ease" }} />
+                  </div>
+                  <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:12 }}>
+                    {CATEGORIES.map(c => (
+                        <button key={c.id} onClick={() => handleCat(c.id)} style={{ flexShrink:0, padding:"7px 13px", borderRadius:99, border:"none", cursor:"pointer", fontSize:12, fontWeight:700, transition:"all 0.15s", background:catId===c.id?accent:"#F1F5F9", color:catId===c.id?"#fff":"#64748B", boxShadow:catId===c.id?`0 2px 8px ${accent}44`:"none" }}>{c.label}</button>
+                    ))}
+                  </div>
                 </div>
-                {!isAiPick && (
-                    <div style={{ display:"flex", background:"#F1F5F9", borderRadius:8, padding:3, gap:2 }}>
-                      {[{mode:"list",icon:"☰"},{mode:"chart",icon:"▊"}].map(btn => (
-                          <button key={btn.mode} onClick={() => setViewMode(btn.mode)} style={{ width:32, height:28, border:"none", borderRadius:6, cursor:"pointer", fontSize:13, fontWeight:700, transition:"all 0.15s", background:viewMode===btn.mode?"#fff":"transparent", color:viewMode===btn.mode?accent:"#94A3B8", boxShadow:viewMode===btn.mode?"0 1px 4px rgba(0,0,0,0.08)":"none" }}>{btn.icon}</button>
+                <MobileHomeContent />
+              </div>
+          )}
+
+          {/* 하단 탭바 */}
+          <div className="bottom-tabbar">
+            {[{id:"home",icon:"📈",label:"홈"},{id:"portfolio",icon:"📊",label:"보유종목"}].map(tab => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ flex:1, padding:"10px 0 12px", border:"none", cursor:"pointer", background:"transparent", display:"flex", flexDirection:"column", alignItems:"center", gap:3 }}>
+                  <span style={{ fontSize:20 }}>{tab.icon}</span>
+                  <span style={{ fontSize:10, fontWeight:700, color:activeTab===tab.id?(isDomestic?"#3B82F6":"#8B5CF6"):"#94A3B8" }}>{tab.label}</span>
+                  {activeTab===tab.id && <div style={{ width:20, height:2, borderRadius:99, background:isDomestic?"#3B82F6":"#8B5CF6", marginTop:1 }} />}
+                </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ── 데스크탑 레이아웃 (≥ 1024px) ── */}
+        <div className="desktop-only" style={{ display:"none" }}>
+          <style>{`
+          @media (min-width: 1024px) { .desktop-only { display: block !important; } }
+        `}</style>
+
+          {/* 상단 글로벌 헤더 */}
+          <div style={{ background:"#fff", borderBottom:"1px solid #F1F5F9", padding:"0 32px", position:"sticky", top:0, zIndex:50, display:"flex", alignItems:"center", gap:24, height:60 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+              <span style={{ fontSize:20, fontWeight:900, color:"#0F172A", letterSpacing:"-0.5px" }}>TrendPick</span>
+              <span style={{ fontSize:10, fontWeight:700, background:"#EFF6FF", color:"#3B82F6", padding:"2px 7px", borderRadius:99 }}>BETA</span>
+            </div>
+            {/* HOT ticker */}
+            <div style={{ flex:1, background:"#0F172A", borderRadius:8, padding:"6px 14px", display:"flex", alignItems:"center", gap:8, overflow:"hidden", maxWidth:480 }}>
+              <span style={{ fontSize:10, fontWeight:800, color:"#F59E0B", flexShrink:0 }}>🔥 HOT</span>
+              <div style={{ flex:1, overflow:"hidden", height:16 }}>
+                <span key={tickerIdx} style={{ display:"block", fontSize:11, fontWeight:700, color:"#fff", animation:"ticker 2.5s ease" }}>#{HOT_KEYWORDS[tickerIdx]}</span>
+              </div>
+            </div>
+            {/* 탭 네비 */}
+            <div style={{ display:"flex", gap:4 }}>
+              {[{id:"home",label:"📈 홈"},{id:"portfolio",label:"📊 보유종목"}].map(tab => (
+                  <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ padding:"6px 16px", border:"none", cursor:"pointer", borderRadius:8, fontSize:13, fontWeight:700, background:activeTab===tab.id?accent:"transparent", color:activeTab===tab.id?"#fff":"#64748B", transition:"all 0.15s" }}>{tab.label}</button>
+              ))}
+            </div>
+            <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:8 }}>
+              <div style={{ background:"#FEF2F2", borderRadius:8, padding:"5px 10px", fontSize:11, color:"#EF4444", fontWeight:700 }}>🔴 LIVE</div>
+              <div style={{ fontSize:11, color:"#94A3B8" }}>{lastUpdated}</div>
+            </div>
+          </div>
+
+          {/* 데스크탑 본문 */}
+          {activeTab === "portfolio" ? (
+              <div style={{ maxWidth:1200, margin:"0 auto", padding:"24px 32px" }}>
+                <div style={{ fontSize:24, fontWeight:900, color:"#0F172A", marginBottom:4 }}>📊 보유종목 시그널</div>
+                <div style={{ fontSize:13, color:"#94A3B8", marginBottom:24 }}>종목명 또는 티커 입력 후 분석</div>
+                <PortfolioContent />
+              </div>
+          ) : (
+              <div style={{ display:"flex", maxWidth:1400, margin:"0 auto" }}>
+                {/* 왼쪽: 필터 패널 */}
+                <div style={{ width:240, flexShrink:0, padding:"20px 16px", borderRight:"1px solid #F1F5F9", position:"sticky", top:60, height:"calc(100vh - 60px)", overflowY:"auto" }}>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#94A3B8", marginBottom:12, textTransform:"uppercase", letterSpacing:"0.05em" }}>시장</div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:4, marginBottom:24 }}>
+                    {[{id:"domestic",label:"🇰🇷 국내주식",color:"#3B82F6"},{id:"overseas",label:"🌐 해외주식",color:"#8B5CF6"}].map(tab => (
+                        <button key={tab.id} onClick={() => handleMarketTab(tab.id)} style={{ padding:"10px 12px", border:"none", cursor:"pointer", borderRadius:10, fontSize:13, fontWeight:700, textAlign:"left", background:marketTab===tab.id?"#F8FAFC":"transparent", color:marketTab===tab.id?tab.color:"#64748B", borderLeft:marketTab===tab.id?`3px solid ${tab.color}`:"3px solid transparent" }}>{tab.label}</button>
+                    ))}
+                  </div>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#94A3B8", marginBottom:12, textTransform:"uppercase", letterSpacing:"0.05em" }}>카테고리</div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+                    {CATEGORIES.map(c => (
+                        <button key={c.id} onClick={() => handleCat(c.id)} style={{ padding:"10px 12px", border:"none", cursor:"pointer", borderRadius:10, fontSize:13, fontWeight:700, textAlign:"left", background:catId===c.id?"#F8FAFC":"transparent", color:catId===c.id?accent:"#64748B", borderLeft:catId===c.id?`3px solid ${accent}`:"3px solid transparent" }}>{c.label}</button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 중앙: 종목 리스트 */}
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ padding:"20px 24px 8px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div>
+                      <div style={{ fontSize:20, fontWeight:800, color:"#0F172A" }}>{isDomestic?"🇰🇷":"🌐"} {cat.short} TOP 10</div>
+                      <div style={{ fontSize:12, color:"#94A3B8", marginTop:2 }}>{cat.desc}</div>
+                    </div>
+                    {!isAiPick && (
+                        <div style={{ display:"flex", background:"#F1F5F9", borderRadius:8, padding:3, gap:2 }}>
+                          {[{mode:"list",icon:"☰"},{mode:"chart",icon:"▊"}].map(btn => (
+                              <button key={btn.mode} onClick={() => setViewMode(btn.mode)} style={{ width:36, height:32, border:"none", borderRadius:6, cursor:"pointer", fontSize:14, fontWeight:700, background:viewMode===btn.mode?"#fff":"transparent", color:viewMode===btn.mode?accent:"#94A3B8", boxShadow:viewMode===btn.mode?"0 1px 4px rgba(0,0,0,0.08)":"none" }}>{btn.icon}</button>
+                          ))}
+                        </div>
+                    )}
+                  </div>
+                  <DesktopHomeContent />
+                </div>
+
+                {/* 오른쪽: 광고 + 구독 유도 */}
+                {!isSubscribed && (
+                    <div style={{ width:300, flexShrink:0, padding:"20px 16px", borderLeft:"1px solid #F1F5F9", position:"sticky", top:60, height:"calc(100vh - 60px)", overflowY:"auto" }}>
+                      <div style={{ background:"linear-gradient(135deg,#0F172A,#1E3A5F)", borderRadius:16, padding:"18px 16px", marginBottom:16 }}>
+                        <div style={{ fontSize:11, fontWeight:700, color:"#60A5FA", marginBottom:6 }}>📢 광고</div>
+                        <div style={{ fontSize:16, fontWeight:900, color:"#fff", marginBottom:6, lineHeight:1.4 }}>📈 증권계좌 개설<br/>현금 3만원 지급!</div>
+                        <div style={{ fontSize:11, color:"#94A3B8", marginBottom:14, lineHeight:1.6 }}>비대면 5분 완성 · 수수료 무료</div>
+                        <button style={{ width:"100%", background:"#3B82F6", color:"#fff", border:"none", borderRadius:10, padding:"10px 0", fontSize:13, fontWeight:800, cursor:"pointer" }}>지금 개설하기 →</button>
+                      </div>
+                      <div style={{ fontSize:13, fontWeight:800, color:"#0F172A", marginBottom:12 }}>✨ 구독 플랜</div>
+                      {PLANS.map(plan => (
+                          <div key={plan.id} style={{ background:plan.bg, border:`2px solid ${plan.border}`, borderRadius:12, padding:"12px", marginBottom:10, position:"relative" }}>
+                            {plan.popular && <div style={{ position:"absolute", top:-8, right:12, background:"#10B981", color:"#fff", fontSize:9, fontWeight:800, padding:"2px 10px", borderRadius:99 }}>인기</div>}
+                            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
+                              <span style={{ fontSize:11, fontWeight:800, color:plan.badgeColor }}>{plan.badge}</span>
+                              <span style={{ fontSize:14, fontWeight:900, color:"#0F172A" }}>{plan.price}</span>
+                            </div>
+                            <button onClick={() => setShowModal(plan.id)} style={{ width:"100%", padding:"8px 0", background:plan.btnBg, color:"#fff", border:"none", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer" }}>{plan.btnLabel}</button>
+                          </div>
                       ))}
                     </div>
                 )}
               </div>
+          )}
+        </div>
 
-              {/* AI Pick — 비구독자 페이월 */}
-              {isAiPick && !isSubscribed && (
-                  <div style={{ padding:"0 16px 100px" }}>
-                    <div style={{ position:"relative", marginBottom:16 }}>
-                      {[1,2,3].map(n => (
-                          <div key={n} style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", background:"#fff", borderBottom:"1px solid #F8FAFC", borderLeft:"3px solid #E0E7FF", filter:"blur(3.5px)", userSelect:"none" }}>
-                            <span style={{ width:26, height:26, borderRadius:6, background:n===1?"#F59E0B":n===2?"#94A3B8":"#B45309", display:"inline-flex", alignItems:"center", justifyContent:"center", color:"#fff", fontSize:12, fontWeight:800, flexShrink:0 }}>{n}</span>
-                            <div style={{ flex:1 }}>
-                              <div style={{ height:14, background:"#E2E8F0", borderRadius:6, width:n===1?"60%":n===2?"50%":"55%", marginBottom:6 }} />
-                              <div style={{ height:10, background:"#F1F5F9", borderRadius:6, width:"80%" }} />
-                            </div>
-                            <div style={{ textAlign:"right" }}>
-                              <div style={{ height:14, background:"#E2E8F0", borderRadius:6, width:60, marginBottom:4 }} />
-                              <div style={{ height:12, background:"#DCFCE7", borderRadius:6, width:48 }} />
-                            </div>
-                          </div>
-                      ))}
-                      <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(248,250,252,0) 0%, rgba(248,250,252,0.97) 60%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end", paddingBottom:16 }}>
-                        <div style={{ fontSize:32, marginBottom:6 }}>🔒</div>
-                        <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:4 }}>구독자 전용 콘텐츠</div>
-                        <div style={{ fontSize:12, color:"#64748B", textAlign:"center", lineHeight:1.6 }}>4개 카테고리를 AI가 종합 분석한<br/>최종 Pick TOP 10을 확인하세요</div>
-                      </div>
-                    </div>
-                    <div style={{ background:"linear-gradient(135deg,#0F172A,#1E1B4B)", borderRadius:16, padding:"18px 16px", marginBottom:16 }}>
-                      <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-                        <span style={{ fontSize:18 }}>✨</span>
-                        <span style={{ fontSize:15, fontWeight:900, color:"#fff" }}>구독하면 이런 게 달라져요</span>
-                      </div>
-                      {[{icon:"🚫",text:"광고 없이 쾌적하게 — 모든 플랜 공통"},{icon:"🤖",text:"AI가 매일 엄선한 탑픽 종목 추천"},{icon:"📊",text:"내 보유종목 매수/보유/매도 시그널"},{icon:"📋",text:"매주 월요일 AI 주간 시황 리포트"}].map(item => (
-                          <div key={item.text} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
-                            <span style={{ fontSize:15 }}>{item.icon}</span>
-                            <span style={{ fontSize:13, color:"#CBD5E1", fontWeight:500 }}>{item.text}</span>
-                          </div>
-                      ))}
-                    </div>
-                    <PlanCards />
-                  </div>
-              )}
+        {/* ── 공통 모달들 ── */}
 
-              {/* AI Pick — 구독자 */}
-              {isAiPick && isSubscribed && (
-                  <>
-                    <div style={{ margin:"0 16px 12px" }}>
-                      {aiLoading ? (
-                          <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", borderRadius:14, padding:"18px 16px", display:"flex", alignItems:"center", gap:12 }}>
-                            <div style={{ fontSize:24 }}>🤖</div>
-                            <div><div style={{ fontSize:13, fontWeight:800, color:"#4338CA" }}>AI 분석 중...</div><div style={{ fontSize:11, color:"#6366F1", marginTop:2 }}>4개 카테고리 데이터를 종합하고 있습니다</div></div>
-                            <div style={{ marginLeft:"auto" }}><div style={{ width:20, height:20, borderRadius:"50%", border:"3px solid #C7D2FE", borderTopColor:"#6366F1", animation:"spin 0.8s linear infinite" }} /></div>
-                          </div>
-                      ) : aiAnalysis[marketTab] ? (
-                          <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", borderRadius:14, padding:"14px 16px", borderLeft:"4px solid #6366F1" }}>
-                            <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:6 }}>
-                              <span style={{ fontSize:14 }}>🤖</span>
-                              <span style={{ fontSize:12, fontWeight:800, color:"#4338CA" }}>AI 종합 분석</span>
-                              <span style={{ fontSize:10, color:"#A5B4FC", marginLeft:"auto" }}>Claude 분석</span>
-                            </div>
-                            <div style={{ fontSize:12, color:"#3730A3", lineHeight:1.7 }}>{aiAnalysis[marketTab]}</div>
-                          </div>
-                      ) : null}
-                    </div>
-                    {renderStockList()}
-                  </>
-              )}
-
-              {/* 일반 카테고리 */}
-              {!isAiPick && (
-                  viewMode === "chart"
-                      ? <BarChart stocks={stocks} catId={catId} accent={accent} />
-                      : renderStockList()
-              )}
-
-              {/* 광고 배너 (비구독자) */}
-              {!isSubscribed && (
-                  <div style={{ position:"fixed", bottom:56, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:430, background:"#fff", borderTop:"1px solid #F1F5F9", padding:"10px 16px", zIndex:40 }}>
-                    <div style={{ background:isDomestic?"linear-gradient(90deg,#EFF6FF,#EEF2FF)":"linear-gradient(90deg,#F5F3FF,#EDE9FE)", borderRadius:10, padding:"10px 14px", display:"flex", alignItems:"center", justifyContent:"space-between", cursor:"pointer" }}>
-                      <div>
-                        <div style={{ fontSize:10, color:"#94A3B8", fontWeight:600 }}>광고</div>
-                        <div style={{ fontSize:13, fontWeight:700, color:isDomestic?"#1E40AF":"#5B21B6" }}>{isDomestic?"📈 국내 증권계좌 개설 시 현금 3만원!":"🌏 해외주식 수수료 0원 이벤트!"}</div>
-                      </div>
-                      <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:accent, borderRadius:8, padding:"4px 10px" }}>바로가기</span>
-                    </div>
-                  </div>
-              )}
-
-              {/* 구독 확인 모달 */}
-              {showModal && (
-                  <div onClick={() => setShowModal(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
-                    <div onClick={e => e.stopPropagation()} style={{ background:"#fff", borderRadius:"24px 24px 0 0", padding:"24px 20px 48px", width:"100%", maxWidth:430, animation:"slideUp 0.25s ease" }}>
-                      <div style={{ width:40, height:4, background:"#E2E8F0", borderRadius:99, margin:"0 auto 20px" }} />
-                      <div style={{ fontSize:20, fontWeight:900, color:"#0F172A", marginBottom:4 }}>
-                        {showModal===1?"BASIC 구독":showModal===2?"⭐ STANDARD 구독":"🔥 PRO 구독"}
-                      </div>
-                      <div style={{ fontSize:13, color:"#64748B", marginBottom:20, lineHeight:1.6 }}>
-                        {showModal===1?"광고 없이 AI 탑픽 TOP 3를 매일 확인하세요.":showModal===2?"AI 탑픽에 보유종목 시그널까지. 투자 판단이 쉬워집니다.":"탑픽 TOP 10 + 보유종목 10개 + 주간 리포트까지 풀패키지로."}
-                      </div>
-                      <div style={{ background:"#F8FAFC", borderRadius:12, padding:"14px 16px", marginBottom:8 }}>
-                        <div style={{ fontSize:13, color:"#475569", marginBottom:4 }}>결제 금액</div>
-                        <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{showModal===1?"월 2,900원":showModal===2?"월 9,900원":"월 29,900원"}</div>
-                      </div>
-                      <div style={{ fontSize:11, color:"#10B981", fontWeight:700, textAlign:"center", marginBottom:20 }}>🎁 7일 무료 체험 · 언제든 해지 가능</div>
-                      <button onClick={() => { setIsSubscribed(true); setSubscribedPlan(showModal); setShowModal(null); }} style={{ width:"100%", padding:"14px 0", border:"none", borderRadius:12, cursor:"pointer", fontSize:15, fontWeight:800, color:"#fff", background:showModal===1?"linear-gradient(90deg,#3B82F6,#6366F1)":showModal===2?"linear-gradient(90deg,#10B981,#059669)":"linear-gradient(90deg,#F59E0B,#EF4444)" }}>
-                        7일 무료로 시작하기 →
-                      </button>
-                      <button onClick={() => setShowModal(null)} style={{ width:"100%", marginTop:10, padding:"12px 0", border:"none", borderRadius:12, background:"#F1F5F9", color:"#64748B", fontSize:14, fontWeight:700, cursor:"pointer" }}>취소</button>
-                    </div>
-                  </div>
-              )}
-
-              {/* 광고 팝업 */}
-              {showAdPopup && (
-                  <div onClick={() => setShowAdPopup(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
-                    <div onClick={e => e.stopPropagation()} style={{ background:"#fff", borderRadius:"24px 24px 0 0", padding:"20px 20px 44px", width:"100%", maxWidth:430, animation:"slideUp 0.25s ease" }}>
-                      <div style={{ width:40, height:4, background:"#E2E8F0", borderRadius:99, margin:"0 auto 16px" }} />
-                      <div style={{ background:"linear-gradient(135deg,#0F172A,#1E3A5F)", borderRadius:16, padding:"20px 18px", marginBottom:16, position:"relative", overflow:"hidden" }}>
-                        <div style={{ position:"absolute", top:-20, right:-20, width:100, height:100, borderRadius:"50%", background:"rgba(59,130,246,0.15)" }} />
-                        <div style={{ fontSize:11, fontWeight:700, color:"#60A5FA", marginBottom:6 }}>📢 광고</div>
-                        <div style={{ fontSize:18, fontWeight:900, color:"#fff", marginBottom:6, lineHeight:1.4 }}>📈 지금 증권계좌 개설하면<br/>현금 3만원 지급!</div>
-                        <div style={{ fontSize:12, color:"#94A3B8", marginBottom:16, lineHeight:1.6 }}>비대면 계좌개설 5분 완성<br/>수수료 무료 + 신규 혜택 한가득</div>
-                        <button style={{ background:"#3B82F6", color:"#fff", border:"none", borderRadius:10, padding:"11px 24px", fontSize:13, fontWeight:800, cursor:"pointer" }}>지금 바로 개설하기 →</button>
-                      </div>
-                      <div style={{ background:"#F8FAFC", borderRadius:12, padding:"14px 16px", marginBottom:16, display:"flex", alignItems:"center", gap:12 }}>
-                        <span style={{ fontSize:22 }}>🚫</span>
-                        <div style={{ flex:1 }}>
-                          <div style={{ fontSize:13, fontWeight:800, color:"#0F172A", marginBottom:2 }}>광고 없이 보고싶으세요?</div>
-                          <div style={{ fontSize:11, color:"#64748B" }}>월 2,900원으로 광고 완전 제거</div>
-                        </div>
-                        <button onClick={() => { setShowAdPopup(false); setShowModal(1); }} style={{ background:"#0F172A", color:"#fff", border:"none", borderRadius:8, padding:"7px 12px", fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0 }}>구독하기</button>
-                      </div>
-                      <button onClick={() => setShowAdPopup(false)} style={{ width:"100%", padding:"12px 0", border:"none", borderRadius:12, background:"#F1F5F9", color:"#64748B", fontSize:14, fontWeight:700, cursor:"pointer" }}>닫기</button>
-                    </div>
-                  </div>
-              )}
-
-              {/* Backdrop + Detail sheet */}
-              {selectedStock && <div onClick={() => setSelectedStock(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.3)", zIndex:99 }} />}
-              <DetailSheet stock={selectedStock} catId={catId} onClose={() => setSelectedStock(null)} accent={accent} />
-
+        {/* 구독 확인 모달 */}
+        {showModal && (
+            <div onClick={() => setShowModal(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
+              <div onClick={e => e.stopPropagation()} style={{ background:"#fff", borderRadius:24, padding:"28px 24px", width:"100%", maxWidth:440, animation:"slideUp 0.25s ease" }}>
+                <div style={{ fontSize:22, fontWeight:900, color:"#0F172A", marginBottom:6 }}>
+                  {showModal===1?"BASIC 구독":showModal===2?"⭐ STANDARD 구독":"🔥 PRO 구독"}
+                </div>
+                <div style={{ fontSize:13, color:"#64748B", marginBottom:20, lineHeight:1.6 }}>
+                  {showModal===1?"광고 없이 AI 탑픽 TOP 3를 매일 확인하세요.":showModal===2?"AI 탑픽에 보유종목 시그널까지. 투자 판단이 쉬워집니다.":"탑픽 TOP 10 + 보유종목 10개 + 주간 리포트까지 풀패키지로."}
+                </div>
+                <div style={{ background:"#F8FAFC", borderRadius:12, padding:"14px 16px", marginBottom:8 }}>
+                  <div style={{ fontSize:13, color:"#475569", marginBottom:4 }}>결제 금액</div>
+                  <div style={{ fontSize:28, fontWeight:900, color:"#0F172A" }}>{showModal===1?"월 2,900원":showModal===2?"월 9,900원":"월 29,900원"}</div>
+                </div>
+                <div style={{ fontSize:11, color:"#10B981", fontWeight:700, textAlign:"center", marginBottom:20 }}>🎁 7일 무료 체험 · 언제든 해지 가능</div>
+                <button onClick={() => { setIsSubscribed(true); setSubscribedPlan(showModal); setShowModal(null); }} style={{ width:"100%", padding:"14px 0", border:"none", borderRadius:12, cursor:"pointer", fontSize:15, fontWeight:800, color:"#fff", background:showModal===1?"linear-gradient(90deg,#3B82F6,#6366F1)":showModal===2?"linear-gradient(90deg,#10B981,#059669)":"linear-gradient(90deg,#F59E0B,#EF4444)" }}>
+                  7일 무료로 시작하기 →
+                </button>
+                <button onClick={() => setShowModal(null)} style={{ width:"100%", marginTop:10, padding:"12px 0", border:"none", borderRadius:12, background:"#F1F5F9", color:"#64748B", fontSize:14, fontWeight:700, cursor:"pointer" }}>취소</button>
+              </div>
             </div>
         )}
 
-        {/* ── 하단 탭바 ── */}
-        <div style={{ position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:430, zIndex:80, background:"#fff", borderTop:"1px solid #F1F5F9", display:"flex" }}>
-          {[{id:"home",icon:"📈",label:"홈"},{id:"portfolio",icon:"📊",label:"보유종목"}].map(tab => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ flex:1, padding:"10px 0 12px", border:"none", cursor:"pointer", background:"transparent", display:"flex", flexDirection:"column", alignItems:"center", gap:3 }}>
-                <span style={{ fontSize:20 }}>{tab.icon}</span>
-                <span style={{ fontSize:10, fontWeight:700, color:activeTab===tab.id?(isDomestic?"#3B82F6":"#8B5CF6"):"#94A3B8" }}>{tab.label}</span>
-                {activeTab === tab.id && <div style={{ width:20, height:2, borderRadius:99, background:isDomestic?"#3B82F6":"#8B5CF6", marginTop:1 }} />}
-              </button>
-          ))}
-        </div>
+        {/* 광고 팝업 */}
+        {showAdPopup && (
+            <div onClick={() => setShowAdPopup(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+              <div onClick={e => e.stopPropagation()} style={{ background:"#fff", borderRadius:"24px 24px 0 0", padding:"20px 20px 44px", width:"100%", maxWidth:480, animation:"slideUp 0.25s ease" }}>
+                <div style={{ width:40, height:4, background:"#E2E8F0", borderRadius:99, margin:"0 auto 16px" }} />
+                <div style={{ background:"linear-gradient(135deg,#0F172A,#1E3A5F)", borderRadius:16, padding:"20px 18px", marginBottom:16 }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:"#60A5FA", marginBottom:6 }}>📢 광고</div>
+                  <div style={{ fontSize:18, fontWeight:900, color:"#fff", marginBottom:6, lineHeight:1.4 }}>📈 지금 증권계좌 개설하면<br/>현금 3만원 지급!</div>
+                  <div style={{ fontSize:12, color:"#94A3B8", marginBottom:16, lineHeight:1.6 }}>비대면 계좌개설 5분 완성<br/>수수료 무료 + 신규 혜택 한가득</div>
+                  <button style={{ background:"#3B82F6", color:"#fff", border:"none", borderRadius:10, padding:"11px 24px", fontSize:13, fontWeight:800, cursor:"pointer" }}>지금 바로 개설하기 →</button>
+                </div>
+                <div style={{ background:"#F8FAFC", borderRadius:12, padding:"14px 16px", marginBottom:16, display:"flex", alignItems:"center", gap:12 }}>
+                  <span style={{ fontSize:22 }}>🚫</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:13, fontWeight:800, color:"#0F172A", marginBottom:2 }}>광고 없이 보고싶으세요?</div>
+                    <div style={{ fontSize:11, color:"#64748B" }}>월 2,900원으로 광고 완전 제거</div>
+                  </div>
+                  <button onClick={() => { setShowAdPopup(false); setShowModal(1); }} style={{ background:"#0F172A", color:"#fff", border:"none", borderRadius:8, padding:"7px 12px", fontSize:12, fontWeight:700, cursor:"pointer", flexShrink:0 }}>구독하기</button>
+                </div>
+                <button onClick={() => setShowAdPopup(false)} style={{ width:"100%", padding:"12px 0", border:"none", borderRadius:12, background:"#F1F5F9", color:"#64748B", fontSize:14, fontWeight:700, cursor:"pointer" }}>닫기</button>
+              </div>
+            </div>
+        )}
 
+        {/* Detail sheet */}
+        {selectedStock && <div onClick={() => setSelectedStock(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.3)", zIndex:99 }} />}
+        <DetailSheet stock={selectedStock} catId={catId} onClose={() => setSelectedStock(null)} accent={accent} />
       </div>
   );
+
+  // ── 홈 콘텐츠 (모바일용) ──
+  function MobileHomeContent() {
+    return (
+        <>
+          <div style={{ padding:"16px 16px 8px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div>
+              <div style={{ fontSize:16, fontWeight:800, color:"#0F172A" }}>{isDomestic?"🇰🇷":"🌐"} {cat.short} TOP 10</div>
+              <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>{cat.desc}</div>
+            </div>
+            {!isAiPick && (
+                <div style={{ display:"flex", background:"#F1F5F9", borderRadius:8, padding:3, gap:2 }}>
+                  {[{mode:"list",icon:"☰"},{mode:"chart",icon:"▊"}].map(btn => (
+                      <button key={btn.mode} onClick={() => setViewMode(btn.mode)} style={{ width:32, height:28, border:"none", borderRadius:6, cursor:"pointer", fontSize:13, fontWeight:700, background:viewMode===btn.mode?"#fff":"transparent", color:viewMode===btn.mode?accent:"#94A3B8", boxShadow:viewMode===btn.mode?"0 1px 4px rgba(0,0,0,0.08)":"none" }}>{btn.icon}</button>
+                  ))}
+                </div>
+            )}
+          </div>
+          <HomeContentBody />
+          {!isSubscribed && (
+              <div style={{ position:"fixed", bottom:56, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:"100%", background:"#fff", borderTop:"1px solid #F1F5F9", padding:"10px 16px", zIndex:40 }}>
+                <div style={{ background:isDomestic?"linear-gradient(90deg,#EFF6FF,#EEF2FF)":"linear-gradient(90deg,#F5F3FF,#EDE9FE)", borderRadius:10, padding:"10px 14px", display:"flex", alignItems:"center", justifyContent:"space-between", cursor:"pointer" }}>
+                  <div>
+                    <div style={{ fontSize:10, color:"#94A3B8", fontWeight:600 }}>광고</div>
+                    <div style={{ fontSize:13, fontWeight:700, color:isDomestic?"#1E40AF":"#5B21B6" }}>{isDomestic?"📈 국내 증권계좌 개설 시 현금 3만원!":"🌏 해외주식 수수료 0원 이벤트!"}</div>
+                  </div>
+                  <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:accent, borderRadius:8, padding:"4px 10px" }}>바로가기</span>
+                </div>
+              </div>
+          )}
+        </>
+    );
+  }
+
+  // ── 홈 콘텐츠 (데스크탑용) ──
+  function DesktopHomeContent() {
+    return (
+        <div style={{ padding:"0 0 40px" }}>
+          <HomeContentBody />
+        </div>
+    );
+  }
+
+  // ── 공통 홈 콘텐츠 바디 ──
+  function HomeContentBody() {
+    return (
+        <>
+          {isAiPick && !isSubscribed && (
+              <div style={{ padding:"0 16px 40px" }}>
+                <div style={{ position:"relative", marginBottom:16 }}>
+                  {[1,2,3].map(n => (
+                      <div key={n} style={{ display:"flex", alignItems:"center", gap:12, padding:"14px 16px", background:"#fff", borderBottom:"1px solid #F8FAFC", borderLeft:"3px solid #E0E7FF", filter:"blur(3.5px)", userSelect:"none" }}>
+                        <span style={{ width:26, height:26, borderRadius:6, background:n===1?"#F59E0B":n===2?"#94A3B8":"#B45309", display:"inline-flex", alignItems:"center", justifyContent:"center", color:"#fff", fontSize:12, fontWeight:800, flexShrink:0 }}>{n}</span>
+                        <div style={{ flex:1 }}>
+                          <div style={{ height:14, background:"#E2E8F0", borderRadius:6, width:n===1?"60%":n===2?"50%":"55%", marginBottom:6 }} />
+                          <div style={{ height:10, background:"#F1F5F9", borderRadius:6, width:"80%" }} />
+                        </div>
+                        <div style={{ textAlign:"right" }}>
+                          <div style={{ height:14, background:"#E2E8F0", borderRadius:6, width:60, marginBottom:4 }} />
+                          <div style={{ height:12, background:"#DCFCE7", borderRadius:6, width:48 }} />
+                        </div>
+                      </div>
+                  ))}
+                  <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(248,250,252,0) 0%, rgba(248,250,252,0.97) 55%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end", paddingBottom:20 }}>
+                    <div style={{ fontSize:32, marginBottom:6 }}>🔒</div>
+                    <div style={{ fontSize:15, fontWeight:800, color:"#0F172A", marginBottom:4 }}>구독자 전용 콘텐츠</div>
+                    <div style={{ fontSize:12, color:"#64748B", textAlign:"center", lineHeight:1.6, marginBottom:16 }}>4개 카테고리를 AI가 종합 분석한<br/>최종 Pick TOP 10을 확인하세요</div>
+                    <button onClick={() => setShowModal(2)} style={{ background:"linear-gradient(90deg,#6366F1,#8B5CF6)", color:"#fff", border:"none", borderRadius:12, padding:"11px 28px", fontSize:13, fontWeight:800, cursor:"pointer" }}>지금 구독하기 →</button>
+                  </div>
+                </div>
+              </div>
+          )}
+
+          {isAiPick && isSubscribed && (
+              <>
+                <div style={{ margin:"0 16px 12px" }}>
+                  {aiLoading ? (
+                      <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", borderRadius:14, padding:"18px 16px", display:"flex", alignItems:"center", gap:12 }}>
+                        <div style={{ fontSize:24 }}>🤖</div>
+                        <div><div style={{ fontSize:13, fontWeight:800, color:"#4338CA" }}>AI 분석 중...</div><div style={{ fontSize:11, color:"#6366F1", marginTop:2 }}>4개 카테고리 데이터를 종합하고 있습니다</div></div>
+                        <div style={{ marginLeft:"auto" }}><div style={{ width:20, height:20, borderRadius:"50%", border:"3px solid #C7D2FE", borderTopColor:"#6366F1", animation:"spin 0.8s linear infinite" }} /></div>
+                      </div>
+                  ) : aiAnalysis[marketTab] ? (
+                      <div style={{ background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)", borderRadius:14, padding:"14px 16px", borderLeft:"4px solid #6366F1" }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:6 }}>
+                          <span style={{ fontSize:14 }}>🤖</span>
+                          <span style={{ fontSize:12, fontWeight:800, color:"#4338CA" }}>AI 종합 분석</span>
+                          <span style={{ fontSize:10, color:"#A5B4FC", marginLeft:"auto" }}>Claude 분석</span>
+                        </div>
+                        <div style={{ fontSize:12, color:"#3730A3", lineHeight:1.7 }}>{aiAnalysis[marketTab]}</div>
+                      </div>
+                  ) : null}
+                </div>
+                {renderStockList()}
+              </>
+          )}
+
+          {!isAiPick && (
+              viewMode === "chart"
+                  ? <BarChart stocks={stocks} catId={catId} accent={accent} />
+                  : renderStockList()
+          )}
+        </>
+    );
+  }
 }
